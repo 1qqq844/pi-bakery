@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pi 香浓面包店 - 订购中心</title>
+    <meta name="pi-domain-verification" content="PENDING_KEY">
+    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fdf5e6; color: #5d4037; text-align: center; }
+        .bakery-box { border: 5px solid #d7ccc8; background: #fff; margin: 20px auto; padding: 20px; width: 90%; max-width: 450px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        h1 { color: #8d6e63; }
+        button { background: #ffb74d; color: white; border: none; padding: 15px 25px; font-size: 18px; border-radius: 25px; cursor: pointer; transition: 0.3s; width: 100%; margin-top: 15px; }
+        button:hover { background: #ffa726; }
+        #log { font-size: 14px; color: #a1887f; margin-top: 20px; border-top: 1px dashed #d7ccc8; padding-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="bakery-box">
+        <h1>🥖 Pi Bakery</h1>
+        <p>今日新鲜出炉：法棍、可颂</p>
+        <div id="auth-ui">
+            <button onclick="login()">欢迎光临 (登录)</button>
+        </div>
+        <div id="order-ui" style="display:none;">
+            <p>欢迎，指挥官...哦不，店长：<span id="user-id"></span></p>
+            <button onclick="orderBread()">订购招牌可颂 (0.1 Pi)</button>
+        </div>
+        <div id="log">等待操作...</div>
+    </div>
+
+    <script>
+        const Pi = window.Pi;
+        function log(m) { document.getElementById('log').innerHTML = "> " + m; }
+
+        try {
+            // 初始化必须开启 sandbox 以便通过测试
+            Pi.init({ version: "2.0", sandbox: true });
+            log("店面装修完毕 (SDK 就绪)");
+        } catch (e) { log("SDK 加载失败"); }
+
+        async function login() {
+            try {
+                const scopes = ['username', 'payments'];
+                const user = await Pi.authenticate(scopes, (p) => log("发现未完成订单"));
+                document.getElementById('user-id').innerText = user.user.username;
+                document.getElementById('auth-ui').style.display = 'none';
+                document.getElementById('order-ui').style.display = 'block';
+                log("欢迎回来，" + user.user.username);
+            } catch (e) { log("认证失败: " + e.message); }
+        }
+
+        function orderBread() {
+            log("正在为您打包可颂...");
+            // 支付逻辑后续在此添加
+        }
+    </script>
+</body>
+</html>
